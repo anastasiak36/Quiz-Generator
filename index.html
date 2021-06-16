@@ -1,0 +1,213 @@
+<html>
+    <head>
+        <title>Quiz Generator</title>
+        <script>
+            var number;
+            var termArray;
+            var definitionArray;
+            var randomDefinition;
+            var userAnswer;
+            function generateTermFillIns() {
+                number = parseInt(document.getElementById("numOfItems").value);
+                var choices = document.getElementById("choices");
+                var header = document.createElement("h4");
+                header.innerHTML = "Type in the Terms and Definitions";
+                choices.appendChild(header);
+
+                //create the correct number of dividers for the inputs
+                for (var j = 0; j < number; j++) {
+                    var divider = document.createElement("div");
+                    divider.setAttribute("id", j);
+                    divider.setAttribute("style", "position: relative; margin-top: 10px;");
+                    choices.appendChild(divider);
+                }
+                //create the inputs 
+                for (var i = 0; i < number; i++) {
+                    var currentDivider = document.getElementById(i);
+                    for (var l = 0; l < 2; l++) {
+                        var input = document.createElement("input");
+                        
+                        if ( l == 0) {
+                            input.setAttribute("placeholder", "Term: " + (i + 1));
+                            input.setAttribute("id", "term" + i);
+                        }
+                        else {
+                            input.setAttribute("placeholder", "Definition: " + (i + 1));
+                            input.setAttribute("id", "def" + i);
+                        }
+                        currentDivider.appendChild(input);
+                    }
+                    var lineBreak = document.createElement("br");
+                    currentDivider.appendChild(lineBreak);
+                }
+                // create the start quiz button
+                var button = document.createElement("input");
+                var buttonDiv = document.getElementById("buttonQuiz");
+                button.setAttribute("type", "button");
+                button.setAttribute("id", "quizButton");
+                button.setAttribute("value", "Start Quiz!");
+                button.setAttribute("onclick", "startQuiz()");
+                button.setAttribute("style", "background-color: LightSkyBlue; position:relative; text-align: left; margin-left: 325px");
+                buttonDiv.appendChild(button);
+                createExitButton();
+            }
+
+            function createExitButton() {
+                exitButton = document.createElement("button");
+                exitButton.setAttribute("type", "button");
+                exitButton.setAttribute("style", "background-color: LightSkyBlue; position:relative; text-align: left; margin-left: 625px")
+                exitButton.innerHTML = '<a href = "https://docs.google.com/document/d/1lRX08KfooogJ5UWpGvHhUAu1y28BKMNt7fEHm4FpRlQ/edit"> Return Home</a>'
+                var exitButtonDiv = document.getElementById("buttonQuiz");
+                exitButtonDiv.appendChild(exitButton);
+            }
+
+            //creates the array for the terms entered
+            function createTermsArray() {
+                terms = new Array(number)
+                for (var i = 0; i < number; i++) {
+                    var term = document.getElementById("term" + i).value;
+                    terms[i] = term;
+                }
+                return terms;
+            }
+            //creates the array for the definitions entered
+            function createDefinitionsArray() {
+                definitions = new Array(number);
+                for (var i = 0; i < number; i++) {
+                    var def = document.getElementById("def" + i).value;
+                    definitions[i] = def;
+                }
+                return definitions;
+            }
+            //this is the function that creates the label and input for the questions
+            function startQuiz() {
+                
+                var quizDiv = document.getElementById("quizDivider");
+                var instruction = document.createElement("h4");
+                instruction.innerHTML = "Type in the correct term for the given definition.";
+                quizDiv.appendChild(instruction);
+
+                var answerButtonDiv = document.getElementById("answerButtonDivider");
+                var checkAnswerButton = document.createElement("input");
+                checkAnswerButton.setAttribute("type", "button");
+                checkAnswerButton.setAttribute("id", "checkAnswerButton");
+                checkAnswerButton.setAttribute("value", "Check Answer");
+                checkAnswerButton.setAttribute("onclick", "checkAnswer()");
+                checkAnswerButton.setAttribute("style", "background-color: lightskyblue");
+                answerButtonDiv.appendChild(checkAnswerButton);
+                termArray = createTermsArray();
+                definitionArray = createDefinitionsArray();
+                var choicesDiv = document.getElementById("choices");
+                choicesDiv.parentNode.removeChild(choicesDiv);
+                var buttonDiv = document.getElementById("buttonQuiz");
+                buttonDiv.parentNode.removeChild(buttonDiv);
+                quiz();
+            }
+            var counter = 0;
+            function quiz() {
+                randomDefinition = Math.floor(Math.random() * definitionArray.length);
+
+                var quizDiv = document.getElementById("quizDivider");
+                var label = document.createElement("label");
+                label.setAttribute("for", "answerLabel");
+                label.setAttribute("style", "position: relative;margin-top: 10px;")
+                var temp = definitionArray[randomDefinition] + ": "
+                label.innerHTML = temp;
+                quizDiv.appendChild(label);
+
+                var answer = document.createElement("input");
+                answer.setAttribute("id", "answer" + counter);
+                answer.setAttribute("style", "position: relative; margin-top: 10px");
+                quizDiv.appendChild(answer);
+                counter += 1;
+            }
+            function checkAnswer() {
+                var quizDiv = document.getElementById("quizDivider");
+                userAnswer = document.getElementById("answer" + (counter - 1)).value;
+                if (userAnswer === termArray[randomDefinition]) {
+                    termArray.splice(randomDefinition, 1);
+                    definitionArray.splice(randomDefinition, 1);
+                    var declaration = document.createElement("h4");
+                    declaration.innerHTML = "You are correct! :)";
+                    declaration.setAttribute("style", "color: darkgreen")
+                    quizDiv.appendChild(declaration);
+                    var star = document.createElement("img");
+                    star.setAttribute("src", "Images/star.png");
+                    star.setAttribute("alt", "star");
+                    star.setAttribute("height", "60px");
+                    star.setAttribute("width", "60px");
+                    var starDiv = document.getElementById("starDivider");
+                    starDiv.appendChild(star);
+
+                }
+                else{
+                    var declaration = document.createElement("h4");
+                    declaration.innerHTML = "That is wrong :(";
+                    declaration.setAttribute("style", "color: crimson")
+                    quizDiv.appendChild(declaration);
+                    var redX = document.createElement("img");
+                    redX.setAttribute("src", "Images/redX.png");
+                    redX.setAttribute("alt", "star");
+                    redX.setAttribute("height", "40px");
+                    redX.setAttribute("width", "40px");
+                    redX.setAttribute("style", "position:relative; margin-right:20px")
+                    var redXDiv = document.getElementById("redXDivider");
+                    redXDiv.appendChild(redX);
+                }
+                if (termArray.length > 0)
+                    quiz();
+                else {
+                    heading = document.createElement("h2");
+                    heading.setAttribute("style", "color: blue")
+                    heading.innerHTML = "Congrats, you finished the quiz! Return to the main page or start over by refreshing!";
+                    quizDiv.appendChild(heading);
+
+                    var congratulationsImage = document.createElement("img");
+                    congratulationsImage.setAttribute("src", "Images/congratulations.png");
+                    congratulationsImage.setAttribute("alt", "congrats!");
+                    congratulationsImage.setAttribute("height", "300px");
+                    congratulationsImage.setAttribute("width", "600px");
+                    var congratsDiv = document.getElementById("congratulationsDivider");
+                    congratsDiv.appendChild(congratulationsImage);
+
+                    var checkAnswerButton = document.getElementById("checkAnswerButton");
+                    checkAnswerButton.parentNode.removeChild(checkAnswerButton);
+                }
+            }
+            
+        </script>
+    </head>
+<body style = "background-color: lightcyan;margin-left: auto;margin-right: auto;width: 1450px;" >
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <img src = "Images/blue_feather.png" alt = "Random" width = "100" height = "100" style = "position:relative;float: left;margin-left: 200px;">
+    <img src = "Images/blue_feather_reflected.png" alt = "feather" width = "100" height = "100" style = "position:relative; float: right;margin-right: 200px">
+    <img src = "Images/questionmark1.png" alt = "?" width = "150" height = "230" style = "position:absolute; margin-top:200px; float: left; margin-left: -200px;">
+    <img src = "Images/questionmark2.png" alt = "?2" width = "150" height = "230" style = "position:absolute; margin-top:200px; float: right; margin-left: 910px">
+    <h1 style = "text-align: center;">Welcome to the Quiz Generator!</h1>
+    
+    <form>
+        <div style = "text-align: center;">
+            <label for="numOfItems" style = "position:relative;margin-top: 100px;"><font size = "+2">Number of terms:</font></label>
+            <input type="number" id="numOfItems" style = "height:20px; width:175px; position:relative;margin-top: 50px;"><br><br>
+            <input type = "button" id = "generateFillIns" value = "Submit!" style = "background-color: lightskyblue;" onclick = "generateTermFillIns()">
+        </div>
+        
+        <div id= "choices" style = "text-align:center;position:relative;margin-top: 50px;"></div>
+        <div id= "buttonDivider">
+            <div id = "buttonQuiz" style ="position:relative;margin-top: 10px;">
+            </div>
+
+            <div id = "buttonExit" style ="text-align: right;position:relative;margin-top: 10px;margin-right: 300px;">
+            </div>
+        </div>
+        <div id = "quizDivider" style = "text-align:center; position: relative; margin-top: 50px"></div>
+        <div id = "answerButtonDivider" style = "text-align:center; position: relative; margin-top: 10px"></div>
+        <div id = "congratulationsDivider" style = "text-align:center; position: relative; margin-top: 20px"></div>
+        <div id = "starDivider" style = "text-align:right; position: relative; margin-top: 20px; margin-right: 200px"></div>
+        <div id = "redXDivider" style = "text-align:right; position: relative; margin-top: 20px; margin-right: 190px"></div>
+        
+    </form>
+
+    
+</body>
+</html>
