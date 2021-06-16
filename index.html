@@ -55,6 +55,7 @@
             function createExitButton() {
                 exitButton = document.createElement("button");
                 exitButton.setAttribute("type", "button");
+                exitButton.setAttribute("id", "exitButton");
                 exitButton.setAttribute("style", "background-color: LightSkyBlue; position:relative; text-align: left; margin-left: 625px")
                 exitButton.innerHTML = '<a href = "https://anastasiak36.github.io/TOLOT/"> Return Home</a>'
                 var exitButtonDiv = document.getElementById("buttonQuiz");
@@ -99,8 +100,10 @@
                 definitionArray = createDefinitionsArray();
                 var choicesDiv = document.getElementById("choices");
                 choicesDiv.parentNode.removeChild(choicesDiv);
-                var buttonDiv = document.getElementById("buttonQuiz");
-                buttonDiv.parentNode.removeChild(buttonDiv);
+                var quizForButton = document.getElementById("quizButton");
+                quizForButton.parentNode.removeChild(quizForButton);
+                var exitButton = document.getElementById("exitButton");
+                exitButton.setAttribute("style", "background-color: LightSkyBlue; position:relative; text-align: left; margin-left: 900px")
                 quiz();
             }
             var counter = 0;
